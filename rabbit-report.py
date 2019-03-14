@@ -99,6 +99,10 @@ def format_as_table(data, keys, header=None, sort_by_key=None, sort_order_revers
     # Create a tuple pair of key and the associated column width for it
     key_width_pair = zip(keys, column_widths)
 
+    # Create un real tuple, zip make one generator and can be
+    # consumed only once.
+    key_width_pair = tuple(key_width_pair) 
+
     format = ('%-*s ' * len(keys)).strip() + '\n'
     formatted_data = ''
     for element in data:
@@ -108,7 +112,13 @@ def format_as_table(data, keys, header=None, sort_by_key=None, sort_order_revers
         for pair in key_width_pair:
             data_to_format.append(pair[1])
             data_to_format.append(element[pair[0]])
-        formatted_data += format % tuple(data_to_format)
+        # if we have data then format it
+        if data_to_format:
+            formatted_data += format % tuple(data_to_format)
+        else:
+            # if not data send message to stdout for control. any wrong?
+            print("without data!", data_to_format, len(data_to_format))
+
     return formatted_data
 
 
